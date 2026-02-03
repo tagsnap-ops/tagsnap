@@ -1,0 +1,85 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isShadowBanned() {
+      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isShadowBanned == true;
+    }
+
+    function denyScoreWrite() {
+      return !("qualityScore" in request.resource.data
+        || "risingScore" in request.resource.data
+        || "controversialScore" in request.resource.data
+        || "lastScoreUpdate" in request.resource.data
+        || "pinnedCommentId" in request.resource.data);
+    }
+
+    match /users/{uid} {
+      allow read: if isSignedIn();
+      allow create: if isOwner(uid);
+      allow update, delete: if isOwner(uid);
+    }
+
+    match /posts/{postId} {
+      allow read: if true;
+      allow create: if isSignedIn() && denyScoreWrite();
+      allow update, delete: if isSignedIn() && request.resource.data.authorId == request.auth.uid && denyScoreWrite();
+    }
+
+    match /comments/{commentId} {
+      allow read: if true;
+      allow create: if isSignedIn() && denyScoreWrite();
+      allow update, delete: if isSignedIn() && request.resource.data.authorId == request.auth.uid && denyScoreWrite();
+    }
+
+    match /votes/{voteId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn()
+        && !isShadowBanned()
+        && request.resource.data.voteId == (request.resource.data.targetId + "_" + request.auth.uid)
+        && request.resource.data.voterId == request.auth.uid;
+      allow update: if isSignedIn()
+        && !isShadowBanned()
+        && resource.data.voterId == request.auth.uid
+        && request.resource.data.voterId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.voterId == request.auth.uid;
+    }
+
+    match /saves/{saveId} {
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    match /shares/{shareId} {
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    match /reports/{reportId} {
+      allow create: if isSignedIn() && request.resource.data.reporterId == request.auth.uid;
+      allow read, delete: if isSignedIn() && resource.data.reporterId == request.auth.uid;
+    }
+
+    match /hides/{hideId} {
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    match /topics/{topicId} {
+      allow read: if true;
+      allow create, update, delete: if isSignedIn();
+    }
+
+    match /messages/{chatId}/items/{messageId} {
+      allow read, create: if isSignedIn();
+      allow update, delete: if isSignedIn() && request.resource.data.senderId == request.auth.uid;
+    }
+  }
+}
