@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import com.tagsnap.R
 import com.tagsnap.ui.navigation.NavRoutes
 import com.tagsnap.ui.screens.AuthScreen
+import com.tagsnap.ui.screens.BlueprintScreen
 import com.tagsnap.ui.screens.CreatePostScreen
 import com.tagsnap.ui.screens.DiscoverScreen
 import com.tagsnap.ui.screens.EmailVerificationScreen
@@ -108,5 +109,6 @@ private fun AppNavHost(navController: NavHostController, modifier: Modifier) {
         composable(NavRoutes.Profile.route) { ProfileScreen(navController) }
         composable(NavRoutes.Messages.route) { MessagesScreen(navController) }
         composable(NavRoutes.Settings.route) { SettingsScreen(navController) }
+        composable(NavRoutes.Blueprint.route) { BlueprintScreen(navController) }
     }
 }

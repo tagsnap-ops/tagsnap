@@ -1,11 +1,14 @@
 package com.tagsnap.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -17,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -35,8 +39,28 @@ fun AuthScreen(navController: NavController, authViewModel: AuthViewModel = view
     ) {
         Text("Welcome Back", style = MaterialTheme.typography.displaySmall)
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
-        OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Password") })
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Password") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text("Email + password only. No phone required.", style = MaterialTheme.typography.bodyMedium)
+        }
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
             authViewModel.login(email, password)
@@ -62,9 +86,34 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel = 
     ) {
         Text("Create Account", style = MaterialTheme.typography.displaySmall)
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(value = handle, onValueChange = { handle = it }, label = { Text("Handle") })
-        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
-        OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Password") })
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            OutlinedTextField(
+                value = handle,
+                onValueChange = { handle = it },
+                label = { Text("Handle") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Password") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text("Reputation starts at 0 and grows with quality.", style = MaterialTheme.typography.bodyMedium)
+        }
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
             authViewModel.register(email, password, handle)
@@ -82,6 +131,7 @@ fun EmailVerificationScreen(navController: NavController, authViewModel: AuthVie
     ) {
         Text("Verify your email", style = MaterialTheme.typography.displaySmall)
         Spacer(modifier = Modifier.height(16.dp))
+        Text("Verification unlocks full posting limits.", style = MaterialTheme.typography.bodyMedium)
         Button(onClick = { authViewModel.sendVerification() }) { Text("Resend Email") }
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = { navController.navigate(NavRoutes.Home.route) }) { Text("Continue") }
@@ -98,7 +148,12 @@ fun ForgotPasswordScreen(navController: NavController, authViewModel: AuthViewMo
     ) {
         Text("Reset Password", style = MaterialTheme.typography.displaySmall)
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
+        OutlinedTextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Email") },
+            modifier = Modifier.fillMaxWidth()
+        )
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
             authViewModel.resetPassword(email)
