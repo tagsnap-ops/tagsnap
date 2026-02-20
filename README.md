@@ -80,3 +80,6 @@ Open the project in Android Studio and press **Run**.
 - Firestore paging is implemented via a `PagingSource` backed by queries.
 - Scores are written only by Cloud Functions (admin SDK bypasses rules).
 - The Android client never computes final scores.
+
+## Blueprint
+See `docs/UpScrolledBlueprint.md` for project structure, database schema, endpoints, and UI component details.

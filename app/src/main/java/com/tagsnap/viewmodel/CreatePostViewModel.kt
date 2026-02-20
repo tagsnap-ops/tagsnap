@@ -25,7 +25,36 @@ class CreatePostViewModel(
     }
 
     fun addMediaUrl(url: String) {
+        if (url.isBlank()) return
         _state.value = _state.value.copy(mediaUrls = _state.value.mediaUrls + url)
+    }
+
+    fun removeMediaUrl(index: Int) {
+        _state.value = _state.value.copy(
+            mediaUrls = _state.value.mediaUrls.toMutableList().also { list ->
+                if (index in list.indices) list.removeAt(index)
+            }
+        )
+    }
+
+    fun updatePollOption(index: Int, value: String) {
+        _state.value = _state.value.copy(
+            pollOptions = _state.value.pollOptions.toMutableList().also { list ->
+                if (index in list.indices) list[index] = value
+            }
+        )
+    }
+
+    fun addPollOption() {
+        _state.value = _state.value.copy(pollOptions = _state.value.pollOptions + "")
+    }
+
+    fun removePollOption(index: Int) {
+        _state.value = _state.value.copy(
+            pollOptions = _state.value.pollOptions.toMutableList().also { list ->
+                if (index in list.indices) list.removeAt(index)
+            }
+        )
     }
 
     fun submit() {
@@ -37,7 +66,8 @@ class CreatePostViewModel(
                     authorHandle = user.email?.substringBefore("@") ?: "user",
                     type = _state.value.type,
                     text = _state.value.text,
-                    mediaUrls = _state.value.mediaUrls
+                    mediaUrls = _state.value.mediaUrls,
+                    pollOptions = _state.value.pollOptions.filter { it.isNotBlank() }
                 )
             )
             _state.value = CreatePostState(success = true)
@@ -49,5 +79,6 @@ data class CreatePostState(
     val text: String = "",
     val type: PostType = PostType.TEXT,
     val mediaUrls: List<String> = emptyList(),
+    val pollOptions: List<String> = listOf("", ""),
     val success: Boolean = false
 )

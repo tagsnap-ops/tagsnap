@@ -70,6 +70,38 @@ data class ModerationFlags(
     val abusive: Boolean = false
 )
 
+data class ReputationLog(
+    val logId: String = "",
+    val userId: String = "",
+    val reason: String = "",
+    val delta: Int = 0,
+    val createdAt: Timestamp = Timestamp.now(),
+    val relatedPostId: String? = null,
+    val relatedCommentId: String? = null
+)
+
+data class EngagementEvent(
+    val eventId: String = "",
+    val userId: String = "",
+    val targetType: VoteTarget = VoteTarget.POST,
+    val targetId: String = "",
+    val dwellSeconds: Int = 0,
+    val scrollDepth: Double = 0.0,
+    val completionRate: Double = 0.0,
+    val rereads: Int = 0,
+    val createdAt: Timestamp = Timestamp.now()
+)
+
+data class ModerationQueueItem(
+    val queueId: String = "",
+    val targetType: VoteTarget = VoteTarget.POST,
+    val targetId: String = "",
+    val reporterId: String = "",
+    val reason: String = "",
+    val createdAt: Timestamp = Timestamp.now(),
+    val status: String = "open"
+)
+
 data class Vote(
     val voteId: String = "",
     val targetType: VoteTarget = VoteTarget.POST,

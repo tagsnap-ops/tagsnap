@@ -18,4 +18,5 @@ sealed class NavRoutes(val route: String) {
     data object Profile : NavRoutes("profile")
     data object Messages : NavRoutes("messages")
     data object Settings : NavRoutes("settings")
+    data object Blueprint : NavRoutes("blueprint")
 }
